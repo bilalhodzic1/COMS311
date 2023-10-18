@@ -20,7 +20,10 @@ public class GameBoard {
             Scanner scanner = new Scanner(file);
             while(scanner.hasNextLine()){
                 String line = scanner.nextLine();
-                System.out.println(line);
+                String[] splitLine = line.split("\\s+");
+                for(String str : splitLine){
+                    System.out.println(str);
+                }
             }
         }catch (Exception e){
             throw new IOException();
