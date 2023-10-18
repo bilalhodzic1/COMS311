@@ -19,7 +19,8 @@ public class GameBoard {
             File file = new File(FileName);
             Scanner scanner = new Scanner(file);
             while(scanner.hasNextLine()){
-
+                String line = scanner.nextLine();
+                System.out.println(line);
             }
         }catch (Exception e){
             throw new IOException();
