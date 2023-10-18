@@ -8,6 +8,7 @@ public class GameBoard {
     public int[][] firstBoard = new int[6][6];
     public Vehicle[] vehicles;
 
+    public ArrayList<PotentialSolution> winningSolutions = new ArrayList<>();
     public HashMap<Integer, int[][]> previousStates = new HashMap<>();
 
     public GameBoard() {
@@ -40,13 +41,13 @@ public class GameBoard {
                 newVehicle.xCoord = coords[0] % 6;
                 newVehicle.yCoord = coords[0] / 6;
                 newVehicle.leftRight = coords[0] + 1 == coords[1];
-                if(coords[2] != 0){
+                if (coords[2] != 0) {
                     newVehicle.length = 3;
-                }else{
+                } else {
                     newVehicle.length = 2;
                 }
-                for(int num : coords){
-                    if(num != 0) {
+                for (int num : coords) {
+                    if (num != 0) {
                         firstBoard[num / 6][num % 6] = currVehicleIndex;
                     }
                 }
@@ -58,36 +59,36 @@ public class GameBoard {
         }
     }
 
-    public ArrayList<Pair> checkAvailableMoves(PotentialSolution state){
+    public ArrayList<Pair> checkAvailableMoves(PotentialSolution state) {
         ArrayList<Pair> potentialMoves = new ArrayList<>();
-        for(Vehicle vehicle : state.stateVehicles){
-            if(vehicle.leftRight){
-                if(vehicle.xCoord -1 > 0){
-                    if(state.currentState[vehicle.yCoord][vehicle.xCoord -1] == -1){
+        for (Vehicle vehicle : state.stateVehicles) {
+            if (vehicle.leftRight) {
+                if (vehicle.xCoord - 1 > 0) {
+                    if (state.currentState[vehicle.yCoord][vehicle.xCoord - 1] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'w'));
                     }
-                    if(vehicle.xCoord + vehicle.length <5){
-                        if(state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                    if (vehicle.xCoord + vehicle.length < 5) {
+                        if (state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                             potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                         }
                     }
-                }else if(vehicle.xCoord + vehicle.length <5){
-                    if(state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                } else if (vehicle.xCoord + vehicle.length < 5) {
+                    if (state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                     }
                 }
-            }else{
-                if(vehicle.yCoord -1 >0){
-                    if(state.currentState[vehicle.yCoord -1][vehicle.xCoord] == -1){
+            } else {
+                if (vehicle.yCoord - 1 > 0) {
+                    if (state.currentState[vehicle.yCoord - 1][vehicle.xCoord] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'n'));
                     }
-                    if(vehicle.yCoord + vehicle.length < 5){
-                        if(state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                    if (vehicle.yCoord + vehicle.length < 5) {
+                        if (state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1) {
                             potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                         }
                     }
-                }else if(vehicle.yCoord + vehicle.length < 5){
-                    if(state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                } else if (vehicle.yCoord + vehicle.length < 5) {
+                    if (state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                     }
                 }
@@ -97,7 +98,7 @@ public class GameBoard {
     }
 
     public ArrayList<Pair> getPlan() {
-        PotentialSolution startingState = new PotentialSolution(new ArrayList<>(),firstBoard, vehicles);
+        PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
 
         ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
 
