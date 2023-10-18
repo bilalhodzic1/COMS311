@@ -1,11 +1,15 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class GameBoard {
     public int[][] boardArray = new int[6][6];
     public Vehicle[] vehicles;
+
+    public HashMap<Integer, int[][]> previousStates = new HashMap<>();
 
     public GameBoard() {
         //Initialize board array to all -1 signfyign empty spots
@@ -55,8 +59,46 @@ public class GameBoard {
         }
     }
 
+    public ArrayList<Pair> checkAvailableMoves(){
+        ArrayList<Pair> potentialMoves = new ArrayList<>();
+        for(Vehicle vehicle : vehicles){
+            if(vehicle.leftRight){
+                if(vehicle.xCoord -1 > 0){
+                    if(boardArray[vehicle.yCoord][vehicle.xCoord -1] == -1){
+                        potentialMoves.add(new Pair(vehicle.vehicleId, 'w'));
+                    }
+                    if(vehicle.xCoord + vehicle.length <5){
+                        if(boardArray[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                            potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
+                        }
+                    }
+                }else if(vehicle.xCoord + vehicle.length <5){
+                    if(boardArray[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                        potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
+                    }
+                }
+            }else{
+                if(vehicle.yCoord -1 >0){
+                    if(boardArray[vehicle.yCoord -1][vehicle.xCoord] == -1){
+                        potentialMoves.add(new Pair(vehicle.vehicleId, 'n'));
+                    }
+                    if(vehicle.yCoord + vehicle.length < 5){
+                        if(boardArray[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                            potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
+                        }
+                    }
+                }else if(vehicle.yCoord + vehicle.length < 5){
+                    if(boardArray[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                        potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
+                    }
+                }
+            }
+        }
+        return potentialMoves;
+    }
+
     public ArrayList<Pair> getPlan() {
-        //TODO
+        checkAvailableMoves();
         return null;
     }
 
