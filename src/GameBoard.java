@@ -42,6 +42,11 @@ public class GameBoard {
                 }else{
                     newVehicle.length = 2;
                 }
+                for(int num : coords){
+                    if(num != 0) {
+                        boardArray[num / 6][num % 6] = currVehicleIndex;
+                    }
+                }
                 vehicles[currVehicleIndex] = newVehicle;
                 currVehicleIndex++;
             }
