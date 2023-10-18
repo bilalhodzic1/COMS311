@@ -2,20 +2,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 public class GameBoard {
-    public int[][] boardArray = new int[6][6];
+    public int[][] firstBoard = new int[6][6];
     public Vehicle[] vehicles;
 
     public HashMap<Integer, int[][]> previousStates = new HashMap<>();
 
     public GameBoard() {
         //Initialize board array to all -1 signfyign empty spots
-        for (int i = 0; i < boardArray.length; i++) {
-            for (int j = 0; j < boardArray[0].length; j++) {
-                boardArray[i][j] = -1;
+        for (int i = 0; i < firstBoard.length; i++) {
+            for (int j = 0; j < firstBoard[0].length; j++) {
+                firstBoard[i][j] = -1;
             }
         }
     }
@@ -48,7 +47,7 @@ public class GameBoard {
                 }
                 for(int num : coords){
                     if(num != 0) {
-                        boardArray[num / 6][num % 6] = currVehicleIndex;
+                        firstBoard[num / 6][num % 6] = currVehicleIndex;
                     }
                 }
                 vehicles[currVehicleIndex] = newVehicle;
@@ -59,36 +58,36 @@ public class GameBoard {
         }
     }
 
-    public ArrayList<Pair> checkAvailableMoves(){
+    public ArrayList<Pair> checkAvailableMoves(PotentialSolution state){
         ArrayList<Pair> potentialMoves = new ArrayList<>();
-        for(Vehicle vehicle : vehicles){
+        for(Vehicle vehicle : state.stateVehicles){
             if(vehicle.leftRight){
                 if(vehicle.xCoord -1 > 0){
-                    if(boardArray[vehicle.yCoord][vehicle.xCoord -1] == -1){
+                    if(state.currentState[vehicle.yCoord][vehicle.xCoord -1] == -1){
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'w'));
                     }
                     if(vehicle.xCoord + vehicle.length <5){
-                        if(boardArray[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                        if(state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                             potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                         }
                     }
                 }else if(vehicle.xCoord + vehicle.length <5){
-                    if(boardArray[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
+                    if(state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                     }
                 }
             }else{
                 if(vehicle.yCoord -1 >0){
-                    if(boardArray[vehicle.yCoord -1][vehicle.xCoord] == -1){
+                    if(state.currentState[vehicle.yCoord -1][vehicle.xCoord] == -1){
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'n'));
                     }
                     if(vehicle.yCoord + vehicle.length < 5){
-                        if(boardArray[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                        if(state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
                             potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                         }
                     }
                 }else if(vehicle.yCoord + vehicle.length < 5){
-                    if(boardArray[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
+                    if(state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1){
                         potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                     }
                 }
@@ -98,7 +97,10 @@ public class GameBoard {
     }
 
     public ArrayList<Pair> getPlan() {
-        checkAvailableMoves();
+        PotentialSolution startingState = new PotentialSolution(new ArrayList<>(),firstBoard, vehicles);
+
+        ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
+
         return null;
     }
 

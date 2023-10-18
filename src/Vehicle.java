@@ -9,4 +9,15 @@ public class Vehicle {
     public int yCoord;
 
     public int length;
+
+    @Override
+    public Vehicle clone(){
+        Vehicle clonedVehicle = new Vehicle();
+        clonedVehicle.xCoord = this.xCoord;
+        clonedVehicle.yCoord = this.yCoord;
+        clonedVehicle.length = this.length;
+        clonedVehicle.vehicleId = this.vehicleId;
+        clonedVehicle.leftRight = this.leftRight;
+        return clonedVehicle;
+    }
 }
