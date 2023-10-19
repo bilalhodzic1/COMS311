@@ -9,7 +9,7 @@ public class GameBoard {
     public Vehicle[] vehicles;
 
     public ArrayList<PotentialSolution> winningSolutions = new ArrayList<>();
-    public HashMap<Integer, int[][]> previousStates = new HashMap<>();
+    public HashMap<Integer, PotentialSolution> previousStates = new HashMap<>();
 
     public GameBoard() {
         //Initialize board array to all -1 signfyign empty spots
@@ -99,7 +99,7 @@ public class GameBoard {
 
     public ArrayList<Pair> getPlan() {
         PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
-
+        int hash = java.util.Arrays.deepHashCode(startingState.currentState);
         ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
 
         return null;
@@ -108,5 +108,29 @@ public class GameBoard {
     public int getNumOfPaths() {
         //TODO
         return -1;
+    }
+
+    public PotentialSolution move(PotentialSolution startingState, Pair move) {
+        PotentialSolution nextState = new PotentialSolution(startingState.currentMoves, startingState.currentState, startingState.stateVehicles);
+        Vehicle toMove = nextState.stateVehicles[move.id];
+        if (move.direction == 'n') {
+            toMove.yCoord--;
+            nextState.currentState[toMove.yCoord][toMove.xCoord] = toMove.vehicleId;
+            nextState.currentState[toMove.yCoord + toMove.length][toMove.xCoord] = -1;
+        } else if (move.direction == 's') {
+            nextState.currentState[toMove.yCoord][toMove.xCoord] = -1;
+            nextState.currentState[toMove.yCoord + toMove.length][toMove.xCoord] = toMove.vehicleId;
+            toMove.yCoord++;
+        } else if (move.direction == 'e') {
+            nextState.currentState[toMove.yCoord][toMove.xCoord] = -1;
+            nextState.currentState[toMove.yCoord][toMove.xCoord + toMove.length] = toMove.vehicleId;
+            toMove.xCoord++;
+        } else {
+            toMove.xCoord--;
+            nextState.currentState[toMove.yCoord][toMove.xCoord] = toMove.vehicleId;
+            nextState.currentState[toMove.yCoord][toMove.xCoord + toMove.length] = -1;
+        }
+        nextState.currentMoves.add(move);
+        return nextState;
     }
 }
