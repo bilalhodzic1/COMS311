@@ -117,8 +117,7 @@ public class GameBoard {
     }
 
     public int getNumOfPaths() {
-        //TODO
-        return -1;
+        return winningSolutions.size();
     }
 
     public PotentialSolution move(PotentialSolution startingState, Pair move) {
@@ -143,5 +142,9 @@ public class GameBoard {
         }
         nextState.currentMoves.add(move);
         return nextState;
+    }
+
+    public boolean checkWin(PotentialSolution toCheck){
+        return toCheck.currentState[2][5] == 0;
     }
 }
