@@ -129,7 +129,7 @@ public class GameBoard {
     }
 
     public int getNumOfPaths() {
-        return winningSolutions.size();
+        return winningSolutions.get(0).numOfPaths;
     }
 
     public PotentialSolution move(PotentialSolution startingState, Pair move) {
