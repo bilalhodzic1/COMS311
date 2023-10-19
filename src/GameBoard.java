@@ -119,7 +119,13 @@ public class GameBoard {
                 }
             }
         }
-        return new ArrayList<>();
+        PotentialSolution winner = winningSolutions.get(0);
+        ArrayList<Pair> winningPath = new ArrayList<>();
+        while (winner.parent != null){
+            winningPath.add(0, winner.moveMade);
+            winner = winner.parent;
+        }
+        return winningPath;
     }
 
     public int getNumOfPaths() {
