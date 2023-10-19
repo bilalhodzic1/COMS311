@@ -100,8 +100,17 @@ public class GameBoard {
     public ArrayList<Pair> getPlan() {
         PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
         int hash = java.util.Arrays.deepHashCode(startingState.currentState);
+        previousStates.put(hash, startingState);
         ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
-
+        for(Pair move: possibleMoves) {
+            PotentialSolution gottembaby = move(startingState, move);
+            for (int i = 0; i < gottembaby.currentState.length; i++) {
+                for (int j = 0; j < gottembaby.currentState[0].length; j++) {
+                    System.out.printf("%4d", gottembaby.currentState[i][j]);
+                }
+                System.out.println();
+            }
+        }
         return null;
     }
 
