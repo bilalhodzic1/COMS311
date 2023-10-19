@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -99,17 +100,18 @@ public class GameBoard {
 
     public ArrayList<Pair> getPlan() {
         PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
-        int hash = java.util.Arrays.deepHashCode(startingState.currentState);
+        int hash = Arrays.deepHashCode(startingState.currentState);
         previousStates.put(hash, startingState);
         ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
-        for(Pair move: possibleMoves) {
-            PotentialSolution gottembaby = move(startingState, move);
-            for (int i = 0; i < gottembaby.currentState.length; i++) {
-                for (int j = 0; j < gottembaby.currentState[0].length; j++) {
-                    System.out.printf("%4d", gottembaby.currentState[i][j]);
-                }
-                System.out.println();
-            }
+        PotentialSolution gottem1 = move(startingState, new Pair(0, 'w'));
+        hash = Arrays.deepHashCode(gottem1.currentState);
+        if(!previousStates.containsKey(hash)){
+            previousStates.put(hash, gottem1);
+        }
+        PotentialSolution gottem2 = move(gottem1, new Pair(0, 'e'));
+        hash = Arrays.deepHashCode(gottem2.currentState);
+        if(previousStates.containsKey(hash)){
+            System.out.println("That previous state hashmap looking nice as fuck");
         }
         return null;
     }
