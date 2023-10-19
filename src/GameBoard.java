@@ -97,7 +97,7 @@ public class GameBoard {
 
     public ArrayList<Pair> getPlan() {
         Queue<PotentialSolution> BFSQ = new LinkedList<>();
-        PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
+        PotentialSolution startingState = new PotentialSolution(firstBoard, vehicles, null);
         int hash = Arrays.deepHashCode(startingState.currentState);
         previousStates.put(hash, startingState);
         BFSQ.add(startingState);
@@ -113,11 +113,13 @@ public class GameBoard {
                     if(!previousStates.containsKey(testHash)){
                         previousStates.put(testHash,testState);
                         BFSQ.add(testState);
+                    }else{
+                        previousStates.get(testHash).numOfPaths += testState.numOfPaths;
                     }
                 }
             }
         }
-        return winningSolutions.get(0).currentMoves;
+        return new ArrayList<>();
     }
 
     public int getNumOfPaths() {
@@ -125,7 +127,7 @@ public class GameBoard {
     }
 
     public PotentialSolution move(PotentialSolution startingState, Pair move) {
-        PotentialSolution nextState = new PotentialSolution(startingState.currentMoves, startingState.currentState, startingState.stateVehicles);
+        PotentialSolution nextState = new PotentialSolution(startingState.currentState, startingState.stateVehicles, startingState);
         Vehicle toMove = nextState.stateVehicles[move.id];
         if (move.direction == 'n') {
             toMove.yCoord--;
@@ -144,7 +146,7 @@ public class GameBoard {
             nextState.currentState[toMove.yCoord][toMove.xCoord] = toMove.vehicleId;
             nextState.currentState[toMove.yCoord][toMove.xCoord + toMove.length] = -1;
         }
-        nextState.currentMoves.add(move);
+        nextState.moveMade = move;
         return nextState;
     }
 

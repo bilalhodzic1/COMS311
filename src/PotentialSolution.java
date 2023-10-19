@@ -4,9 +4,12 @@ public class PotentialSolution {
     int[][] currentState;
 
     Vehicle[] stateVehicles;
-    ArrayList<Pair> currentMoves = new ArrayList<>();
 
-    public PotentialSolution(ArrayList<Pair> newMoves, int[][] newState, Vehicle[] newVehicles){
+    Pair moveMade;
+    int numOfPaths;
+    PotentialSolution parent;
+
+    public PotentialSolution(int[][] newState, Vehicle[] newVehicles, PotentialSolution parent){
         stateVehicles = new Vehicle[newVehicles.length];
         for(int i = 0 ; i < newVehicles.length; i++){
             stateVehicles[i] = newVehicles[i].clone();
@@ -15,6 +18,11 @@ public class PotentialSolution {
         for(int i = 0; i < newState.length; i++){
             currentState[i] = newState[i].clone();
         }
-        currentMoves.addAll(newMoves);
+        this.parent = parent;
+        if(parent == null){
+            numOfPaths = 1;
+        }else{
+            numOfPaths = parent.numOfPaths;
+        }
     }
 }
