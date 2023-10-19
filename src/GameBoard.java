@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameBoard {
     public int[][] firstBoard = new int[6][6];
@@ -64,31 +61,31 @@ public class GameBoard {
         ArrayList<Pair> potentialMoves = new ArrayList<>();
         for (Vehicle vehicle : state.stateVehicles) {
             if (vehicle.leftRight) {
-                if (vehicle.xCoord - 1 > 0) {
+                if (vehicle.xCoord - 1 >= 0) {
                     if (state.currentState[vehicle.yCoord][vehicle.xCoord - 1] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'w'));
                     }
-                    if (vehicle.xCoord + vehicle.length < 5) {
+                    if (vehicle.xCoord + vehicle.length <= 5) {
                         if (state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                             potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                         }
                     }
-                } else if (vehicle.xCoord + vehicle.length < 5) {
+                } else if (vehicle.xCoord + vehicle.length <= 5) {
                     if (state.currentState[vehicle.yCoord][vehicle.xCoord + vehicle.length] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'e'));
                     }
                 }
             } else {
-                if (vehicle.yCoord - 1 > 0) {
+                if (vehicle.yCoord - 1 >= 0) {
                     if (state.currentState[vehicle.yCoord - 1][vehicle.xCoord] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 'n'));
                     }
-                    if (vehicle.yCoord + vehicle.length < 5) {
+                    if (vehicle.yCoord + vehicle.length <= 5) {
                         if (state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1) {
                             potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                         }
                     }
-                } else if (vehicle.yCoord + vehicle.length < 5) {
+                } else if (vehicle.yCoord + vehicle.length <= 5) {
                     if (state.currentState[vehicle.yCoord + vehicle.length][vehicle.xCoord] == -1) {
                         potentialMoves.add(new Pair(vehicle.vehicleId, 's'));
                     }
@@ -99,21 +96,28 @@ public class GameBoard {
     }
 
     public ArrayList<Pair> getPlan() {
+        Queue<PotentialSolution> BFSQ = new LinkedList<>();
         PotentialSolution startingState = new PotentialSolution(new ArrayList<>(), firstBoard, vehicles);
         int hash = Arrays.deepHashCode(startingState.currentState);
         previousStates.put(hash, startingState);
-        ArrayList<Pair> possibleMoves = checkAvailableMoves(startingState);
-        PotentialSolution gottem1 = move(startingState, new Pair(0, 'w'));
-        hash = Arrays.deepHashCode(gottem1.currentState);
-        if(!previousStates.containsKey(hash)){
-            previousStates.put(hash, gottem1);
+        BFSQ.add(startingState);
+        while(!BFSQ.isEmpty()){
+            PotentialSolution currentStateSolution = BFSQ.poll();
+            if(checkWin(currentStateSolution)){
+                winningSolutions.add(currentStateSolution);
+            }else{
+                ArrayList<Pair> potentialMoves = checkAvailableMoves(currentStateSolution);
+                for(Pair move : potentialMoves){
+                    PotentialSolution testState = move(currentStateSolution, move);
+                    int testHash = Arrays.deepHashCode(testState.currentState);
+                    if(!previousStates.containsKey(testHash)){
+                        previousStates.put(testHash,testState);
+                        BFSQ.add(testState);
+                    }
+                }
+            }
         }
-        PotentialSolution gottem2 = move(gottem1, new Pair(0, 'e'));
-        hash = Arrays.deepHashCode(gottem2.currentState);
-        if(previousStates.containsKey(hash)){
-            System.out.println("That previous state hashmap looking nice as fuck");
-        }
-        return null;
+        return winningSolutions.get(0).currentMoves;
     }
 
     public int getNumOfPaths() {
