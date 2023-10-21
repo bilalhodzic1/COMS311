@@ -161,7 +161,7 @@ public class GameBoard {
         return toCheck.currentState[2][5] == 0;
     }
 
-    public class PotentialSolution {
+    class PotentialSolution {
         int[][] currentState;
 
         Vehicle[] stateVehicles;
@@ -188,7 +188,7 @@ public class GameBoard {
         }
     }
 
-    public class Vehicle {
+    class Vehicle {
         public int vehicleId;
         public boolean leftRight;
 
@@ -212,7 +212,7 @@ public class GameBoard {
         }
     }
 
-    public class Pair {
+    class Pair {
         int id;
         char direction;
 
@@ -221,19 +221,19 @@ public class GameBoard {
             id = i;
         }
 
-        public char getDirection() {
+        char getDirection() {
             return direction;
         }
 
-        public int getId() {
+        int getId() {
             return id;
         }
 
-        public void setId(int i) {
+        void setId(int i) {
             id = i;
         }
 
-        public void setDirection(char d) {
+        void setDirection(char d) {
             direction = d;
         }
     }
