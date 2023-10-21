@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+//Author Bilal Hodzic
 public class GameBoard {
     public int[][] firstBoard = new int[6][6];
     public Vehicle[] vehicles;
