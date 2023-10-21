@@ -101,19 +101,19 @@ public class GameBoard {
         int hash = Arrays.deepHashCode(startingState.currentState);
         previousStates.put(hash, startingState);
         BFSQ.add(startingState);
-        while(!BFSQ.isEmpty()){
+        while (!BFSQ.isEmpty()) {
             PotentialSolution currentStateSolution = BFSQ.poll();
-            if(checkWin(currentStateSolution)){
+            if (checkWin(currentStateSolution)) {
                 winningSolutions.add(currentStateSolution);
-            }else{
+            } else {
                 ArrayList<Pair> potentialMoves = checkAvailableMoves(currentStateSolution);
-                for(Pair move : potentialMoves){
+                for (Pair move : potentialMoves) {
                     PotentialSolution testState = move(currentStateSolution, move);
                     int testHash = Arrays.deepHashCode(testState.currentState);
-                    if(!previousStates.containsKey(testHash)){
-                        previousStates.put(testHash,testState);
+                    if (!previousStates.containsKey(testHash)) {
+                        previousStates.put(testHash, testState);
                         BFSQ.add(testState);
-                    }else{
+                    } else {
                         previousStates.get(testHash).numOfPaths += testState.numOfPaths;
                     }
                 }
@@ -121,7 +121,7 @@ public class GameBoard {
         }
         PotentialSolution winner = winningSolutions.get(0);
         ArrayList<Pair> winningPath = new ArrayList<>();
-        while (winner.parent != null){
+        while (winner.parent != null) {
             winningPath.add(0, winner.moveMade);
             winner = winner.parent;
         }
@@ -156,7 +156,84 @@ public class GameBoard {
         return nextState;
     }
 
-    public boolean checkWin(PotentialSolution toCheck){
+    public boolean checkWin(PotentialSolution toCheck) {
         return toCheck.currentState[2][5] == 0;
+    }
+
+    public class PotentialSolution {
+        int[][] currentState;
+
+        Vehicle[] stateVehicles;
+
+        Pair moveMade;
+        int numOfPaths;
+        PotentialSolution parent;
+
+        public PotentialSolution(int[][] newState, Vehicle[] newVehicles, PotentialSolution parent) {
+            stateVehicles = new Vehicle[newVehicles.length];
+            for (int i = 0; i < newVehicles.length; i++) {
+                stateVehicles[i] = newVehicles[i].clone();
+            }
+            currentState = new int[6][6];
+            for (int i = 0; i < newState.length; i++) {
+                currentState[i] = newState[i].clone();
+            }
+            this.parent = parent;
+            if (parent == null) {
+                numOfPaths = 1;
+            } else {
+                numOfPaths = parent.numOfPaths;
+            }
+        }
+    }
+
+    public class Vehicle {
+        public int vehicleId;
+        public boolean leftRight;
+
+        //Always leftmost x coord which is lowest actual value
+        public int xCoord;
+
+        //Always highest on grid y value which is lowest actual value
+        public int yCoord;
+
+        public int length;
+
+        @Override
+        public Vehicle clone() {
+            Vehicle clonedVehicle = new Vehicle();
+            clonedVehicle.xCoord = this.xCoord;
+            clonedVehicle.yCoord = this.yCoord;
+            clonedVehicle.length = this.length;
+            clonedVehicle.vehicleId = this.vehicleId;
+            clonedVehicle.leftRight = this.leftRight;
+            return clonedVehicle;
+        }
+    }
+
+    public class Pair {
+        int id;
+        char direction;
+
+        public Pair(int i, char d) {
+            direction = d;
+            id = i;
+        }
+
+        public char getDirection() {
+            return direction;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int i) {
+            id = i;
+        }
+
+        public void setDirection(char d) {
+            direction = d;
+        }
     }
 }
